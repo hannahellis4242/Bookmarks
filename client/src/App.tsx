@@ -1,7 +1,13 @@
 import React from "react";
+import Navigation from "./components/Navigation";
 
-function App() {
-  return <p>Hello World</p>;
-}
+const App: React.FC = () => {
+  return (
+    <main>
+      <Navigation />
+      <header>Home</header>
+    </main>
+  );
+};
 
 export default App;
