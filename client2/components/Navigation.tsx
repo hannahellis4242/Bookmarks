@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 const Navigation: React.FC = () => {
@@ -5,10 +6,10 @@ const Navigation: React.FC = () => {
     <nav>
       <ul>
         <li>
-          <a href="/">Home</a>
+          <Link href="/">Home</Link>
         </li>
         <li>
-          <a href="/bookmarks">Bookmarks</a>
+          <Link href="/bookmarks">Bookmarks</Link>
         </li>
       </ul>
     </nav>

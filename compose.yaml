@@ -10,6 +10,8 @@ services:
       MYSQL_PASSWORD: password
     volumes:
       - ./database:/var/lib/mysql
+    ports:
+      - "3306:3306"
   adminer:
     image: adminer
     restart: always

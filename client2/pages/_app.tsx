@@ -1,7 +1,12 @@
 import type { AppProps } from "next/app";
+import BookmarksContextProvider from "../store/BookmarksContext";
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
-}
+const MyApp = ({ Component, pageProps }: AppProps) => {
+  return (
+    <BookmarksContextProvider>
+      <Component {...pageProps} />
+    </BookmarksContextProvider>
+  );
+};
 
 export default MyApp;
