@@ -7,19 +7,20 @@ interface LinkInfo {
   tag: string;
 }
 
-const getTagInfoForLink = (link: string): Result<LinkInfo[], Error> => {
-  return queryDB(`select bookmark.id, user.name as user , tag.label as tag
+const queryForLink = (link: string) => {
+  return `select bookmark.id, user.name as user , tag.label as tag
   from bookmark 
   inner join user on user.id=bookmark.user
   inner join tag on tag.id=bookmark.tag
-  where link=(select link.id from link where link.url='${link}')`).map(
-    (data) => data as LinkInfo[]
-  );
+  where link=(select link.id from link where link.url='${link}')`;
 };
 
 const tagInfoHandler: RequestHandler = (req, res) => {
   if (req.query.link) {
     //wish to find the tags for a particular link
+    queryDB(queryForLink(req.query.link.toString()))
+      .then((results) => res.status(200).json(results))
+      .catch((err) => res.status(500).json(err));
   }
 };
 

@@ -5,10 +5,10 @@ const allHandler: RequestHandler = (_, res) => {
   queryDB(
     "select bookmark.id, link.url as link, tag.label as tag,user.name as user from bookmark inner join link on bookmark.link = link.id inner join tag on bookmark.tag = tag.id inner join user on bookmark.user = user.id"
   )
-    .map((results) => {
+    .then((results) => {
       res.status(200).json(results);
     })
-    .mapErr((err) => {
+    .catch((err) => {
       res.status(500).json({ err: err.message });
     });
 };
