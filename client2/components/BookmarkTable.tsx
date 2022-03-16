@@ -6,12 +6,12 @@ const BookmarkTable: React.FC = () => {
   const bookmarksModel = useContext(BookmarksContext);
   useEffect(() => bookmarksModel.getAll(), []);
   return (
-    <table className={classes.redTable}>
+    <table className={classes.blueTable}>
       <thead>
         <tr>
-          <th>link</th>
-          <th>tag</th>
-          <th>user</th>
+          <th>Link</th>
+          <th>Tag</th>
+          <th>User</th>
         </tr>
       </thead>
       <tbody>
