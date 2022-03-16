@@ -1,5 +1,6 @@
 import { createContext, useState } from "react";
 import Bookmark from "../models/bookmark";
+import axios from "axios";
 
 interface BookmarksModelContext {
   bookmarks: Bookmark[];
@@ -12,27 +13,17 @@ export const BookmarksContext = createContext<BookmarksModelContext>({
 });
 
 const BookmarksContextProvider: React.FC = (props) => {
-  const [result, setResult] = useState<Bookmark[]>([]);
+  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
 
   const getAllHandler = () => {
-    //looks like we need our own node.js sever to handle this
-    /*const connection = mysql.createConnection({
-      host: "localhost",
-      user: "admin",
-      password: "password",
-      database: "bookmarks",
-    });
-    connection.connect((error) => {
-      if (error) {
-        console.error("error connecting to database: " + error.stack);
-        return;
-      }
-      connection.end();
-    });*/
+    axios
+      .get("http://localhost:5000/bookmarks")
+      .then(({ data }) => setBookmarks(() => data))
+      .catch((reason) => console.log("error : ", reason));
   };
 
   const context = {
-    bookmarks: result,
+    bookmarks: bookmarks,
     getAll: getAllHandler,
   };
   return (
