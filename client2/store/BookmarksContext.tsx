@@ -1,5 +1,5 @@
 import { createContext, useState } from "react";
-import Bookmark from "../models/bookmark";
+import Bookmark from "../models/Bookmark";
 import axios from "axios";
 
 interface BookmarksModelContext {
@@ -17,7 +17,7 @@ const BookmarksContextProvider: React.FC = (props) => {
 
   const getAllHandler = () => {
     axios
-      .get("http://localhost:5000/bookmarks")
+      .get("http://localhost:5000/bookmarks/all")
       .then(({ data }) => setBookmarks(() => data))
       .catch((reason) => console.log("error : ", reason));
   };

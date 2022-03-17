@@ -1,11 +1,14 @@
 import type { AppProps } from "next/app";
 import BookmarksContextProvider from "../store/BookmarksContext";
+import LinksContextProvider from "../store/LinksContext";
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
-    <BookmarksContextProvider>
-      <Component {...pageProps} />
-    </BookmarksContextProvider>
+    <LinksContextProvider>
+      <BookmarksContextProvider>
+        <Component {...pageProps} />
+      </BookmarksContextProvider>
+    </LinksContextProvider>
   );
 };
 
