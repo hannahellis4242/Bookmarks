@@ -1,3 +1,4 @@
+import axios from "axios";
 import { linkSync } from "fs";
 import React, { useContext, useEffect, useState } from "react";
 import { LinksContext } from "../store/LinksContext";
@@ -16,31 +17,27 @@ const BookmarkCards: React.FC = () => {
   useEffect(() => {
     links.getAll();
     links.links.map((link) => {
-      //for this link we need to get all the tags that go wtih this link
+      console.log("getting tags for ", link);
+      axios
+        .get(`http://localhost:5000/tags?link=${link}`)
+        .then(({ data }) => console.log(data))
+        .catch((reason) => console.log("error : ", reason));
     });
   }, []);
 
   return (
-    <table className={classes.blueTable}>
-      <thead>
-        <tr>
-          <th>Link</th>
-          <th>Tag</th>
-          <th>User</th>
-        </tr>
-      </thead>
-      <tbody>
-        {bookmarksModel.bookmarks.map((bookmark) => (
-          <tr key={bookmark.id}>
-            <td>
-              <a href={bookmark.link}>{bookmark.link}</a>
-            </td>
-            <td>{bookmark.tag}</td>
-            <td>{bookmark.user}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <section>
+      {cards.map(({ link, tags }) => (
+        <section>
+          <header>{link}</header>
+          <ul>
+            {tags.map((tag, index) => (
+              <li key={index}>tag</li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </section>
   );
 };
 
