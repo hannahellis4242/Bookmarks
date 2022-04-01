@@ -16,9 +16,22 @@ const LinksContextProvider: React.FC = (props) => {
   const [links, setLinks] = useState<Link[]>([]);
 
   const getAllHandler = () => {
+    setLinks(() => []);
     axios
       .get("http://localhost:5000/links/all")
-      .then(({ data }) => setLinks(() => data))
+      .then(({ data }) => {
+        data.map(({ url }) => {
+          axios
+            .get(`http://localhost:5000/tags?link=${url}`)
+            .then(({ data }) => {
+              const link = new Link(
+                url,
+                data.map(({ tag }) => tag)
+              );
+              setLinks((prev) => prev.concat([link]));
+            });
+        });
+      })
       .catch((reason) => console.log("error : ", reason));
   };
 

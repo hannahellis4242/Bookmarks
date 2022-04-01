@@ -1,3 +1,3 @@
 export default class Link {
-  constructor(public id: number, public url: string) {}
+  constructor(public url: string, public tags: string[] = []) {}
 }
