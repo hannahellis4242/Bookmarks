@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import { useContext, useEffect } from "react";
 import BookmarkCards from "../components/BookmarkCards";
 import Navigation from "../components/Navigation";
+import User from "../components/User";
 import { BookmarksContext } from "../store/BookmarksContext";
 
 const Bookmarks: NextPage = () => {
@@ -10,6 +11,7 @@ const Bookmarks: NextPage = () => {
   return (
     <main>
       <Navigation />
+      <User />
       <BookmarkCards />
     </main>
   );
