@@ -3,7 +3,12 @@ import { UserContext } from "../store/UserContext";
 const User: React.FC = () => {
   const user = useContext(UserContext);
   if (user.user) {
-    return <section>Welocome {user.user}</section>;
+    return (
+      <section>
+        <p>Welcome {user.user}</p>
+        <button>logout</button>
+      </section>
+    );
   }
   return (
     <section>
