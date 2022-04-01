@@ -28,7 +28,11 @@ const LinksContextProvider: React.FC = (props) => {
                 url,
                 data.map(({ tag }) => tag)
               );
-              setLinks((prev) => prev.concat([link]));
+              setLinks((prev) => {
+                const next = prev.concat([link]);
+                next.sort((a, b) => a.url.localeCompare(b.url));
+                return next;
+              });
             });
         });
       })

@@ -1,7 +1,6 @@
 import type { NextPage } from "next";
 import { useContext, useEffect } from "react";
 import BookmarkCards from "../components/BookmarkCards";
-import BookmarkTable from "../components/BookmarkTable";
 import Navigation from "../components/Navigation";
 import { BookmarksContext } from "../store/BookmarksContext";
 
@@ -11,8 +10,6 @@ const Bookmarks: NextPage = () => {
   return (
     <main>
       <Navigation />
-      <header>Bookmarks</header>
-      <BookmarkTable />
       <BookmarkCards />
     </main>
   );
