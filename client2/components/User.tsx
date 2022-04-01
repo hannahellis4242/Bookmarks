@@ -2,10 +2,13 @@ import React, { useContext } from "react";
 import { UserContext } from "../store/UserContext";
 const User: React.FC = () => {
   const user = useContext(UserContext);
+  if (user.user) {
+    return <section>Welocome {user.user}</section>;
+  }
   return (
     <section>
-      <p>user info section</p>
-      <p>current user {user.user}</p>
+      <p>Please Login to add new bookmarks or tags</p>
+      <button>login</button>
     </section>
   );
 };
