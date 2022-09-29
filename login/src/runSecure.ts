@@ -46,10 +46,10 @@ export const runSecure = async (
   const server = await createServer(config.options, app).then((server) =>
     server.listen(config.ports.secure)
   );
-  const safeClose = () => {
+  const safeClose = async () => {
     console.log("Closing http server.");
     redirect.close(() => console.log("HTTP server closed."));
-    console.log("closing https server.");
+    console.log("Closing https server.");
     server.close(() => console.log("HTTPS sever closed"));
   };
   process.on("SIGTERM", () => {
