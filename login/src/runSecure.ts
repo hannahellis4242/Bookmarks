@@ -24,7 +24,7 @@ const readOptions = async (keyPath: PathLike, certPath: PathLike) => {
   );
 };
 
-const createServer = async (
+const createHTTPSServer = async (
   options: { key: PathLike; cert: PathLike },
   app: Express
 ) => {
@@ -43,7 +43,7 @@ export const runSecure = async (
   const redirect = await createRedirectSever(config.ports.secure).then(
     (server) => server.listen(config.ports.open)
   );
-  const server = await createServer(config.options, app).then((server) =>
+  const server = await createHTTPSServer(config.options, app).then((server) =>
     server.listen(config.ports.secure)
   );
   const safeClose = async () => {
