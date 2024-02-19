@@ -2,32 +2,24 @@ import { Request, Router } from "express";
 import User, { UserSchema } from "../Model/User";
 import Service from "../Service/Service";
 import { StatusCodes } from "http-status-codes";
+import { notFound } from "../Service/LocalService";
 
 const user = (service: Service) => {
-  const getAuthHeader = (req: Request): User | undefined => {
+  const getAuthHeader = (req: Request): Promise<User> => {
     const auth = req.headers.authorization;
     if (!auth) {
-      return undefined;
+      return Promise.reject(notFound);
     }
-    const [name, password] = Buffer.from(auth.slice(6), 'base64').toString().split(":");
+    const [name, password] = Buffer.from(auth.slice(6), "base64")
+      .toString()
+      .split(":");
     if (!name) {
-      return undefined;
+      return Promise.reject(notFound);
     }
     if (!password) {
-      return undefined;
+      return Promise.reject(notFound);
     }
-    return { name, password };
-  };
-
-  const verifyUser = (user: User): boolean => {
-    const userData = service.getUser(user.name);
-    if (!userData) {
-      return false;
-    }
-    if (userData.password !== user.password) {
-      return false;
-    }
-    return true;
+    return Promise.resolve({ name, password });
   };
 
   const route = Router();
@@ -45,13 +37,15 @@ const user = (service: Service) => {
       return;
     }
     const user = body.data;
-    const found = service.findUser(user.name);
-    if (found !== undefined) {
+    try {
+      await service.findUser(user.name);
       res.sendStatus(StatusCodes.CONFLICT);
-      return;
+    } catch (e) {
+      if (e === notFound) {
+        await service.saveUser(user);
+        res.sendStatus(StatusCodes.CREATED);
+      }
     }
-    const id = service.saveUser(user);
-    res.sendStatus(StatusCodes.CREATED);
   });
 
   route.get("/login", async (req, res) => {
@@ -60,55 +54,50 @@ const user = (service: Service) => {
       res.sendStatus(StatusCodes.BAD_REQUEST);
       return;
     }
-    res.status(StatusCodes.OK).json({ success: verifyUser(user) });
+    res
+      .status(StatusCodes.OK)
+      .json({ success: await service.verifyUser(user.name, user.password) });
   });
 
-  route.delete("/", (req, res) => {
+  route.delete("/", async (req, res) => {
+    const user = getAuthHeader(req).catch(()=>res.sendStatus(StatusCodes.BAD_REQUEST))
+    .then(({name,password})=>service.verifyUser(name,password))
+    const verified = await service.verifyUser(user.name, user.password);
+    if (!verified) {
+      res.sendStatus(StatusCodes.UNAUTHORIZED);
+      return;
+    }
+    await service
+      .findUser(user.name)
+      .then((userID) => service.removeUser(userID))
+      .then(() => res.sendStatus(StatusCodes.OK))
+      .catch((e) => {
+        res.sendStatus(StatusCodes.NOT_FOUND);
+      });
+  });
+
+  route.put("/", (req, res) => {
     const user = getAuthHeader(req);
     if (!user) {
       res.sendStatus(StatusCodes.BAD_REQUEST);
       return;
     }
-    if(!verifyUser(user)){
+    if (!verifyUser(user)) {
       res.sendStatus(StatusCodes.UNAUTHORIZED);
-      return ;
-    }
-    const userID = service.findUser(user.name);
-    if (!userID) {
-      res.sendStatus(StatusCodes.NOT_FOUND);
       return;
     }
-    const success = service.removeUser(userID);
+    const { password } = req.body;
+    if (!password) {
+      res.sendStatus(StatusCodes.BAD_REQUEST);
+      return;
+    }
+    const success = service.update(user.name, password);
     if (!success) {
       res.sendStatus(StatusCodes.NOT_FOUND);
       return;
     }
     res.sendStatus(StatusCodes.OK);
   });
-
-route.put("/",(req,res)=>{
-  const user = getAuthHeader(req);
-  if (!user) {
-    res.sendStatus(StatusCodes.BAD_REQUEST);
-    return;
-  }
-  if(!verifyUser(user)){
-    res.sendStatus(StatusCodes.UNAUTHORIZED);
-    return ;
-  }
-  const {password} = req.body;
-  if(!password){
-    res.sendStatus(StatusCodes.BAD_REQUEST);
-    return;
-  }
-  const success = service.update(user.name,password);
-  if (!success) {
-    res.sendStatus(StatusCodes.NOT_FOUND);
-    return;
-  }
-  res.sendStatus(StatusCodes.OK);
-})
-
 
   return route;
 };
