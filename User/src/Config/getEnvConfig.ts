@@ -1,17 +1,17 @@
 import Config from "./Config";
 
-const getEnvConfig = (): Config | undefined => {
+const getEnvConfig = async (): Promise<Config> => {
   const hostname = process.env.HOST;
   if (!hostname) {
-    return undefined;
+    return Promise.reject(new Error("No HOST in environment"));
   }
   const portStr = process.env.PORT;
   if (!portStr) {
-    return undefined;
+    return Promise.reject(new Error("No PORT in environment"));
   }
   const port = parseInt(portStr);
   if (!Number.isInteger(port)) {
-    return undefined;
+    return Promise.reject(new Error("PORT is not an integer"));
   }
   return { hostname, port };
 };
