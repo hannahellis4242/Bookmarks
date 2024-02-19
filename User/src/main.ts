@@ -9,7 +9,7 @@ import user from "./Routes/user";
     const app = express();
     app.use(json());
 
-    app.use("/",user(service))
+    app.use("/user",user(service))
 
     app.listen(config.port, config.hostname, () =>
       console.log(`listening on ${config.hostname}:${config.port}`)
