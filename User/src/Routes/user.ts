@@ -48,20 +48,17 @@ const user = (service: Service) => {
     }
   });
 
-  route.get("/login", async (req, res) => {
-    const user = getAuthHeader(req);
-    if (!user) {
-      res.sendStatus(StatusCodes.BAD_REQUEST);
-      return;
-    }
-    res
-      .status(StatusCodes.OK)
-      .json({ success: await service.verifyUser(user.name, user.password) });
-  });
+  route.get("/login", async (req, res) =>
+    getAuthHeader(req)
+      .then(({ name, password }) => service.verifyUser(name, password))
+      .then((isVerified) => res.status(StatusCodes.OK).json({ isVerified }))
+      .catch(() => res.sendStatus(StatusCodes.BAD_REQUEST))
+  );
 
   route.delete("/", async (req, res) => {
-    const user = getAuthHeader(req).catch(()=>res.sendStatus(StatusCodes.BAD_REQUEST))
-    .then(({name,password})=>service.verifyUser(name,password))
+    const user = getAuthHeader(req)
+      .catch(() => res.sendStatus(StatusCodes.BAD_REQUEST))
+      .then(({ name, password }) => service.verifyUser(name, password));
     const verified = await service.verifyUser(user.name, user.password);
     if (!verified) {
       res.sendStatus(StatusCodes.UNAUTHORIZED);
