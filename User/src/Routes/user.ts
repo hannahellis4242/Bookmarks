@@ -1,7 +1,9 @@
 import { Request, Response, Router } from "express";
 import User, { UserSchema } from "../Model/User";
-import Service, { ServiceErrors } from "../Service/Service";
+import Service from "../Service/Service";
 import { StatusCodes } from "http-status-codes";
+import ServiceErrors from "../Service/ServiceErrors";
+import { error } from "console";
 
 class ParseError {
   constructor(public message: string) {}
@@ -36,10 +38,17 @@ const handleError = (e: Errors, res: Response) => {
       return;
     case Errors.Conflict:
       res.sendStatus(StatusCodes.CONFLICT);
+      return;
+    case ServiceErrors.DBError:
+      res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
+      return;
   }
   if (e instanceof ParseError) {
     res.status(StatusCodes.BAD_REQUEST).send(e.message);
+    return;
   }
+  console.error("Error not handled : ", e);
+  throw Error("unhandled error");
 };
 
 const user = (service: Service) => {
@@ -91,7 +100,7 @@ const user = (service: Service) => {
     parseBody(req)
       .then(({ data }) =>
         service
-          .getUser(data.name)
+          .findUser(data.name)
           .then((id) => ({ id, ...data }))
           .catch((error) =>
             error === ServiceErrors.NotFound

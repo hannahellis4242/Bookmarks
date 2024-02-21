@@ -1,4 +1,5 @@
 export default interface Config{
     hostname:string,
-    port:number
+    port:number,
+    databaseHost:string;
 }

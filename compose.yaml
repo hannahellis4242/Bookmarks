@@ -1,19 +1,16 @@
 version: "3.9"
 services:
   db:
-    image: mysql
+    image: mongo
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: test
-      MYSQL_DATABASE: bookmarks
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: password
     volumes:
-      - ./database:/var/lib/mysql
+      - ./database/db:/data/db
+      - ./database/config:/data/configdb
+    userns_mode: keep-id
+    expose:
+      - 27017
     ports:
-      - "3306:3306"
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8080:8080
+      - 27017:27017
+volumes:
+  data:
+  config:

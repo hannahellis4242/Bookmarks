@@ -3,15 +3,14 @@ import getConfig from "./Config/getConfig";
 import { exit } from "process";
 import LocalService from "./Service/LocalService";
 import user from "./Routes/user";
-import HashingService from "./Service/HashingService";
+import MongoDBService from "./Service/MongoDBService";
 (async () =>
   getConfig().then((config) => {
-    const service = new LocalService();
-    const hashingService = new HashingService(service);
+    const service = new MongoDBService(config.databaseHost,"users","users");
     const app = express();
     app.use(json());
 
-    app.use("/user",user(hashingService))
+    app.use("/user",user(service))
 
     app.listen(config.port, config.hostname, () =>
       console.log(`listening on ${config.hostname}:${config.port}`)

@@ -1,6 +1,8 @@
 import { v4 } from "uuid";
 import User from "../Model/User";
-import Service, { ServiceErrors, UserID } from "./Service";
+import Service from "./Service";
+import ServiceErrors from "./ServiceErrors";
+import UserID from "./UserID";
 
 interface LocalUser extends User {
   id: string;
@@ -11,13 +13,20 @@ export default class LocalService implements Service {
   constructor() {
     this.users = [];
   }
-  verifyUser(_: string, __: string): Promise<boolean> {
-    return Promise.reject(ServiceErrors.NotImpl);
+  verifyUser(name: string, password: string): Promise<boolean> {
+    const found = this.users.find((user) => user.name === name);
+    if(!found){
+      return Promise.reject(ServiceErrors.NotFound);
+    }
+    return Promise.resolve(found.password === password);
   }
   update(name: string, password: string): Promise<void> {
-    return this.getUser(name).then((user) => {
-      user.password = password;
-    });
+    const found = this.users.find((user) => user.name === name);
+    if(!found){
+      return Promise.reject(ServiceErrors.NotFound);
+    }
+    found.password = password;
+    return Promise.resolve();
   }
   removeUser(id: UserID): Promise<void> {
     const index = this.users.findIndex((user) => user.id === id.value);
@@ -26,12 +35,6 @@ export default class LocalService implements Service {
     }
     this.users.splice(index, 1);
     return Promise.resolve();
-  }
-  getUser(name: string): Promise<User> {
-    const found = this.users.find((user) => user.name === name);
-    return found
-      ? Promise.resolve(found)
-      : Promise.reject(ServiceErrors.NotFound);
   }
   findUser(name: string): Promise<UserID> {
     const found = this.users.find((user) => user.name === name);

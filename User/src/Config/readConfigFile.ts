@@ -21,6 +21,10 @@ const readConfigFile = async (path: string): Promise<Config> =>
       if (!Number.isInteger(port)) {
         return Promise.reject(new Error("PORT is not an integer"));
       }
-      return { hostname, port };
+      const databaseHost = config.DB_HOST
+      if (!databaseHost) {
+        return Promise.reject(new Error("No DB_HOST in config file"));
+      }
+      return { hostname, port,databaseHost };
     });
 export default readConfigFile;

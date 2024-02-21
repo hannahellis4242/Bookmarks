@@ -13,6 +13,10 @@ const getEnvConfig = async (): Promise<Config> => {
   if (!Number.isInteger(port)) {
     return Promise.reject(new Error("PORT is not an integer"));
   }
-  return { hostname, port };
+  const databaseHost = process.env.DB_HOST
+  if (!databaseHost) {
+    return Promise.reject(new Error("No DB_HOST in environment"));
+  }
+  return { hostname, port,databaseHost };
 };
 export default getEnvConfig;
