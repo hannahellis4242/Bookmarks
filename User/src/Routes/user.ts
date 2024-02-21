@@ -27,12 +27,15 @@ const handleError = (e: Errors, res: Response) => {
       return;
     case Errors.NotVerified:
       res.sendStatus(StatusCodes.UNAUTHORIZED);
+      return;
     case ServiceErrors.NotFound:
       res.sendStatus(StatusCodes.NOT_FOUND);
       return;
     case ServiceErrors.NotImpl:
       res.sendStatus(StatusCodes.NOT_IMPLEMENTED);
       return;
+    case Errors.Conflict:
+      res.sendStatus(StatusCodes.CONFLICT);
   }
   if (e instanceof ParseError) {
     res.status(StatusCodes.BAD_REQUEST).send(e.message);
@@ -87,7 +90,14 @@ const user = (service: Service) => {
   route.post("/", async (req, res) => {
     parseBody(req)
       .then(({ data }) =>
-        service.getUser(data.name).then((id) => ({ id, ...data }))
+        service
+          .getUser(data.name)
+          .then((id) => ({ id, ...data }))
+          .catch((error) =>
+            error === ServiceErrors.NotFound
+              ? Promise.resolve({ id: undefined, ...data })
+              : Promise.reject(error)
+          )
       )
       .then(({ id, name, password }) =>
         id
