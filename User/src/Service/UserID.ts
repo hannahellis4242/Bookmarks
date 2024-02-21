@@ -3,4 +3,4 @@ export default interface UserID {
   value: string;
 }
 
-export const userId=(id:string):UserID=>({t:"user",value:id});
+export const userId = (id: string): UserID => ({ t: "user", value: id });

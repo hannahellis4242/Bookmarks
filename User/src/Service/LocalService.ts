@@ -15,14 +15,14 @@ export default class LocalService implements Service {
   }
   verifyUser(name: string, password: string): Promise<boolean> {
     const found = this.users.find((user) => user.name === name);
-    if(!found){
+    if (!found) {
       return Promise.reject(ServiceErrors.NotFound);
     }
     return Promise.resolve(found.password === password);
   }
   update(name: string, password: string): Promise<void> {
     const found = this.users.find((user) => user.name === name);
-    if(!found){
+    if (!found) {
       return Promise.reject(ServiceErrors.NotFound);
     }
     found.password = password;

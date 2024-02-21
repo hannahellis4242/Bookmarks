@@ -1,5 +1,4 @@
-export default interface Config{
-    hostname:string,
-    port:number,
-    databaseHost:string;
+export default interface Config {
+  port: number;
+  databaseHost: string;
 }

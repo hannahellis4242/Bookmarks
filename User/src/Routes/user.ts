@@ -74,10 +74,10 @@ const user = (service: Service) => {
       .then(({ name, password }) =>
         service
           .verifyUser(name, password)
-          .then((isVerified) => ({ name, isVerified }))
+          .then((isVerified) => ({ name, isVerified })),
       )
       .then(({ name, isVerified }) =>
-        isVerified ? Promise.resolve(name) : Promise.reject(Errors.NotVerified)
+        isVerified ? Promise.resolve(name) : Promise.reject(Errors.NotVerified),
       );
 
   const parseBody = (req: Request) => {
@@ -87,8 +87,8 @@ const user = (service: Service) => {
         new ParseError(
           body.error.issues
             .map(({ path, message }) => `${path} : ${message}`)
-            .join("\n")
-        )
+            .join("\n"),
+        ),
       );
     }
     return Promise.resolve(body);
@@ -105,13 +105,13 @@ const user = (service: Service) => {
           .catch((error) =>
             error === ServiceErrors.NotFound
               ? Promise.resolve({ id: undefined, ...data })
-              : Promise.reject(error)
-          )
+              : Promise.reject(error),
+          ),
       )
       .then(({ id, name, password }) =>
         id
           ? Promise.reject(Errors.Conflict)
-          : service.saveUser({ name, password })
+          : service.saveUser({ name, password }),
       )
       .then(() => res.sendStatus(StatusCodes.CREATED))
       .catch((error) => handleError(error, res));
@@ -121,7 +121,7 @@ const user = (service: Service) => {
     getAuthHeader(req)
       .then(({ name, password }) => service.verifyUser(name, password))
       .then((isVerified) => res.status(StatusCodes.OK).json({ isVerified }))
-      .catch((e) => res.sendStatus(StatusCodes.BAD_REQUEST))
+      .catch((e) => res.sendStatus(StatusCodes.BAD_REQUEST)),
   );
 
   route.delete("/", async (req, res) =>
@@ -129,7 +129,7 @@ const user = (service: Service) => {
       .then((name) => service.findUser(name))
       .then((userID) => service.removeUser(userID))
       .then(() => res.sendStatus(StatusCodes.OK))
-      .catch((e) => handleError(e, res))
+      .catch((e) => handleError(e, res)),
   );
 
   route.put("/", (req, res) =>
@@ -138,11 +138,11 @@ const user = (service: Service) => {
       .then(({ name, password }) =>
         password
           ? Promise.resolve({ name, password })
-          : Promise.reject(Errors.NoUpdatePassword)
+          : Promise.reject(Errors.NoUpdatePassword),
       )
       .then(({ name, password }) => service.update(name, password))
       .then(() => res.sendStatus(StatusCodes.OK))
-      .catch((e) => handleError(e, res))
+      .catch((e) => handleError(e, res)),
   );
   return route;
 };

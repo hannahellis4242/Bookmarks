@@ -10,7 +10,7 @@ export default class MongoDBService implements Service {
   constructor(
     host: string,
     private readonly dbName: string,
-    private readonly collectionName: string
+    private readonly collectionName: string,
   ) {
     this.url = `mongodb://${host}:27017`;
   }
@@ -28,12 +28,12 @@ export default class MongoDBService implements Service {
       .then((docs) =>
         docs.length === 0
           ? Promise.reject(ServiceErrors.NotFound)
-          : Promise.resolve(docs)
+          : Promise.resolve(docs),
       )
       .then((docs) =>
         docs.length === 1
           ? Promise.resolve(docs[0])
-          : Promise.reject(ServiceErrors.TooMany)
+          : Promise.reject(ServiceErrors.TooMany),
       )
       .then(({ _id }) => userId(_id.toString()))
       .finally(() => client.close());
@@ -52,12 +52,12 @@ export default class MongoDBService implements Service {
       .then((docs) =>
         docs.length === 0
           ? Promise.reject(ServiceErrors.NotFound)
-          : Promise.resolve(docs)
+          : Promise.resolve(docs),
       )
       .then((docs) =>
         docs.length === 1
           ? Promise.resolve(docs[0])
-          : Promise.reject(ServiceErrors.TooMany)
+          : Promise.reject(ServiceErrors.TooMany),
       )
       .then(({ hashed }) => compare(password, hashed))
       .finally(() => client.close());
@@ -85,15 +85,15 @@ export default class MongoDBService implements Service {
       .then((client) => client.db(this.dbName))
       .then((db) => db.collection(this.collectionName))
       .then((collection) =>
-        collection.deleteOne({ _id: new ObjectId(id.value) })
+        collection.deleteOne({ _id: new ObjectId(id.value) }),
       )
       .then((result) =>
         result.acknowledged
           ? Promise.resolve(result.deletedCount)
-          : Promise.reject(ServiceErrors.DBError)
+          : Promise.reject(ServiceErrors.DBError),
       )
       .then((count) =>
-        count > 0 ? Promise.resolve() : Promise.reject(ServiceErrors.NotFound)
+        count > 0 ? Promise.resolve() : Promise.reject(ServiceErrors.NotFound),
       )
       .catch((error) => {
         console.error(error);
@@ -109,15 +109,17 @@ export default class MongoDBService implements Service {
         .then((client) => client.db(this.dbName))
         .then((db) => db.collection(this.collectionName))
         .then((collection) =>
-          collection.updateOne({ name }, { $set: { hashed } })
+          collection.updateOne({ name }, { $set: { hashed } }),
         )
         .then((result) =>
           result.acknowledged
             ? Promise.resolve(result.matchedCount)
-            : Promise.reject(ServiceErrors.DBError)
+            : Promise.reject(ServiceErrors.DBError),
         )
         .then((count) =>
-          count > 0 ? Promise.resolve() : Promise.reject(ServiceErrors.NotFound)
+          count > 0
+            ? Promise.resolve()
+            : Promise.reject(ServiceErrors.NotFound),
         )
         .catch((error) => {
           console.error(error);
