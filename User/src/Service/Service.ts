@@ -1,6 +1,13 @@
 import User from "../Model/User";
 
-export type UserID = string ;
+export interface UserID{t:"user",value:string};
+
+export const ServiceErrors = {
+    NotFound: "NotFound",
+    NotImpl:"NotImpl"
+  } as const;
+export type ServiceErrors = typeof ServiceErrors[keyof typeof ServiceErrors];
+
 export default interface Service{
     findUser(name:string):Promise<UserID>;
     getUser(name:string):Promise<User>;

@@ -18,7 +18,7 @@ export default class HashingService implements Service {
       this.wrapped.saveUser({ name, password: hashed })
     );
   }
-  removeUser(name: string): Promise<void> {
+  removeUser(name: UserID): Promise<void> {
     return this.wrapped.removeUser(name);
   }
   update(name: string, password: string): Promise<void> {
