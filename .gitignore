@@ -3,3 +3,5 @@ package-lock.json
 database
 .next
 dist
+User/config
+User/db

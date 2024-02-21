@@ -15,9 +15,9 @@ services:
     build: ./User
     restart: always
     environment:
-      - HOST=0.0.0.0
-      - PORT=5001
-      - DB_HOST=userdb
+      - HOST=${HOST}
+      - PORT=${PORT}
+      - DB_HOST=${DB_HOST}
     depends_on:
       - userdb
     expose:
