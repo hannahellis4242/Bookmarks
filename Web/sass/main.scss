@@ -1,0 +1,17 @@
+@import 'colours';
+@import 'nav';
+@import 'login';
+
+body{
+    background-color:$first;
+    color: $fifth;
+    padding: 0;
+    margin: 0;
+}
+
+main{
+    header{
+        text-align: center;
+        font-size: 2rem;
+    }
+}

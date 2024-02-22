@@ -1,16 +1,33 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <%- include('head') %>
 </head>
+
 <body>
+  <%- include('nav') %>
   <main>
-    <header>Bookmarks</header>
-    <section>
+    <header>Sign In</header>
+    <section id="login">
       <header>Please log in</header>
-      <form method="post" action="/">
-        <button type="submit">Continue</button>
+      <form method="post" action="/login">
+        <div>
+          <label for="name">Name</label>
+          <input type="text" name="name" id="name" />
+        </div>
+        <div>
+          <label for="password">Password</label>
+          <input type="password" name="password" id="password" />
+        </div>
+        <button type="submit">Sign In</button>
       </form>
+      <section>
+        <p>Don't have a username and password?</p>
+        <a href="/signup">sign up here</a>
+      </section>
     </section>
+  </main>
 </body>
+
 </html>

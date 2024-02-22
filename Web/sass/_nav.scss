@@ -1,0 +1,30 @@
+@import './colours';
+
+nav {
+    margin-bottom: 5px;
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: $second;
+    }
+
+    li {
+        float: left;
+        a {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            margin: 0;
+            padding: 14px 16px;
+            color: $fifth;
+
+            &:hover {
+                background-color: $third;
+                color: $fourth;
+                font-weight: bold;
+            }
+        }
+    }
+}

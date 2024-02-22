@@ -1,0 +1,43 @@
+#login {
+    width: 80%;
+    margin: 2rem auto 0 auto;
+    background-color: $second;
+    padding: 1rem 3rem;
+    border-radius: 1rem;
+    form{
+        margin: auto;
+        padding: 1rem 2rem;
+        background-color: $fourth;
+        border: 1px solid $third;
+        border-radius: 1rem;
+        width:fit-content;
+        label{
+            float: left;
+            padding-right: 1rem;
+        }
+        input{
+            float: right;
+        }
+        button{
+            margin: 1rem auto 1rem 1rem;
+            background-color: $third;
+            border: none;
+            border-radius: 0.5rem;
+            box-shadow: 3px 2px 2px darken($fourth,10%);
+            padding: 0.5rem;
+            &:hover{
+                box-shadow: none;
+                background-color: lighten($third,10%);
+                cursor:pointer;
+            }
+        }
+    }
+    section{
+        text-align: center;
+        a{
+            color: $third;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    }
+}
