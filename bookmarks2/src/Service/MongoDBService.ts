@@ -14,6 +14,29 @@ export default class MongoDBService implements UserService, LinkService {
   ) {
     this.url = `mongodb://${host}:27017`;
   }
+  removeLink(id: LinkID): Promise<void> {
+    const client = new MongoClient(this.url);
+    return client
+      .connect()
+      .then((client) => client.db(this.dbName))
+      .then((db) => db.collection(this.linkCollectionName))
+      .then((collection) =>
+        collection.deleteOne({ _id: new ObjectId(id.value) }),
+      )
+      .then((result) =>
+        result.acknowledged
+          ? Promise.resolve(result.deletedCount)
+          : Promise.reject(ServiceErrors.DBError),
+      )
+      .then((count) =>
+        count > 0 ? Promise.resolve() : Promise.reject(ServiceErrors.NotFound),
+      )
+      .catch((error) => {
+        console.error(error);
+        return Promise.reject(ServiceErrors.DBError);
+      })
+      .finally(() => client.close());
+  }
   getLinkID(url: string): Promise<LinkID> {
     const client = new MongoClient(this.url);
     return client

@@ -29,13 +29,20 @@ const link = (service: LinkService) =>
     .post("/", (req, res) =>
       readBody(req, "url", Errors.NoURL)
         .then((url) => service.saveLink(url))
-        .then((id) => res.send(id.value))
+        .then((id) => res.status(StatusCodes.CREATED).send(id.value))
         .catch(handleError(res))
     )
     .get("/", (req, res) =>
       readQuery(req, "url", Errors.NoURL)
         .then((url) => service.getLinkID(url))
         .then((id) => res.send(id.value))
+        .catch(handleError(res))
+    )
+    .delete("/", (req, res) =>
+      readQuery(req, "url", Errors.NoURL)
+        .then((url) => service.getLinkID(url))
+        .then((id) => service.removeLink(id))
+        .then(() => res.sendStatus(StatusCodes.OK))
         .catch(handleError(res))
     );
 
