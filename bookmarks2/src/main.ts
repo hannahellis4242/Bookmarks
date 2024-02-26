@@ -20,7 +20,6 @@ import label from "./Routes/label";
       app.use("/label",label(service));
       app.use("/link", link(service));
       app.use("/tag",tag(service));
-      //app.use("/user", user(service));
 
       app.listen(config.port, "0.0.0.0", () =>
         console.log(`listening on port ${config.port}`)

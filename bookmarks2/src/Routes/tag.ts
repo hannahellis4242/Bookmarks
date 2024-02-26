@@ -48,9 +48,28 @@ const link = (service: LabelService & LinkService & TagService) =>
         .then((linkIds) =>
           Promise.all(linkIds.map((link) => service.getLink(link)))
         )
-        .then((links)=>links.map(({link})=>link))
+        .then((links) => links.map(({ link }) => link))
         .then((links) => res.json(links))
         .catch(handleError(res));
-    });
-
+    })
+    .get("/", (req, res) =>
+      readQuery(req, "link", Errors.NoLink)
+      .then((x)=>{console.log(`here 1 : ${JSON.stringify(x,null,2)}`); return Promise.resolve(x)})
+        .then((link) => service.getLinkID({ link }))
+        .then((x)=>{console.log(`here 2 : ${JSON.stringify(x,null,2)}`); return Promise.resolve(x)})
+        .then((linkId) => service.findTagsWithLink(linkId))
+        .then((x)=>{console.log(`here 3 : ${JSON.stringify(x,null,2)}`); return Promise.resolve(x)})
+        .then((tagIDs) =>
+          Promise.all(tagIDs.map((tagId) => service.getTagLabelID(tagId)))
+        )
+        .then((x)=>{console.log(`here 4 : ${JSON.stringify(x,null,2)}`); return Promise.resolve(x)})
+        .then((labelIds) =>
+          Promise.all(labelIds.map((labelId) => service.getLabel(labelId)))
+        )
+        .then((x)=>{console.log(`here 5 : ${JSON.stringify(x,null,2)}`); return Promise.resolve(x)})
+        .then((labels) => labels.map(({ label }) => label))
+        .then((x)=>{console.log(`here 6 : ${JSON.stringify(x,null,2)}`); return Promise.resolve(x)})
+        .then((labels) => res.json(labels))
+        .catch(handleError(res))
+    );
 export default link;
