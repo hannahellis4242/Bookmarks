@@ -8,6 +8,7 @@ import LabelService from "./LabelService";
 import TagService from "./TagService";
 import Link from "../Model/Link";
 import Label from "../Model/Label";
+import label from "../Routes/label";
 
 export interface CollectionNames {
   readonly link: string;
@@ -30,6 +31,57 @@ export default class MongoDBService
     private readonly collections: CollectionNames
   ) {
     this.url = `mongodb://${host}:27017`;
+  }
+  allLabels(): Promise<LabelID[]> {
+    const client = new MongoClient(this.url);
+    return client
+      .connect()
+      .then((client) => client.db(this.dbName))
+      .then((db) => db.collection(this.collections.label))
+      .then((collection) =>
+        collection.find<WithId<Label>>({}).toArray()
+      )
+      .then((existing) =>
+        existing.length !== 0 
+          ? Promise.resolve(existing)
+          : Promise.reject(ServiceErrors.NotFound)
+      )
+      .then((links) => links.map(({_id})=>labelID(_id.toString())))
+      .finally(() => client.close());
+  }
+  allLinks(): Promise<LinkID[]> {
+    const client = new MongoClient(this.url);
+    return client
+      .connect()
+      .then((client) => client.db(this.dbName))
+      .then((db) => db.collection(this.collections.link))
+      .then((collection) =>
+        collection.find<WithId<Link>>({}).toArray()
+      )
+      .then((existing) =>
+        existing.length !== 0 
+          ? Promise.resolve(existing)
+          : Promise.reject(ServiceErrors.NotFound)
+      )
+      .then((links) => links.map(({_id})=>linkId(_id.toString())))
+      .finally(() => client.close());
+  }
+  allTags(): Promise<TagID[]> {
+    const client = new MongoClient(this.url);
+    return client
+      .connect()
+      .then((client) => client.db(this.dbName))
+      .then((db) => db.collection(this.collections.tag))
+      .then((collection) =>
+        collection.find<WithId<Tag>>({}).toArray()
+      )
+      .then((existing) =>
+        existing.length !== 0 
+          ? Promise.resolve(existing)
+          : Promise.reject(ServiceErrors.NotFound)
+      )
+      .then((tags) => tags.map(({_id})=>tagID(_id.toString())))
+      .finally(() => client.close());
   }
   getTagLabelID(tagID: TagID): Promise<LabelID> {
     const client = new MongoClient(this.url);
